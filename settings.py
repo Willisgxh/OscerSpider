@@ -68,6 +68,10 @@ ITEM_PIPELINES = {
    'OscerSpider.pipelines.OscerspiderPipeline': 300,
 }
 
+URI = 'bolt://localhost:7687'
+NEO4J_USER = 'neo4j'
+NEO4J_PASSWORD = 'password'
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

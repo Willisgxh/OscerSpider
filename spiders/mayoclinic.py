@@ -7,7 +7,7 @@ from scrapy.http import HtmlResponse
 class BaiduSpider(scrapy.Spider):
     name = 'mayoclinic'
     allowed_domains = ['www.mayoclinic.org']
-    chrom_driver = webdriver.Chrome('chromedriver.exe')
+    chrome_driver = webdriver.Chrome('chromedriver.exe')
 
     start_urls = ['https://www.mayoclinic.org/diseases-conditions/index?letter=0']
     for i in range(26):
@@ -47,10 +47,10 @@ class BaiduSpider(scrapy.Spider):
         item['Causes'] = causes
 
         # Click Diagnosis & treatment to reveal hidden content
-        self.chrom_driver.get(response.url)
-        button = self.chrom_driver.find_element_by_xpath('//*[@id="et_genericNavigation_diagnosis-treatment"]')
+        self.chrome_driver.get(response.url)
+        button = self.chrome_driver.find_element_by_xpath('//*[@id="et_genericNavigation_diagnosis-treatment"]')
         button.click()
-        html = self.chrom_driver.page_source
+        html = self.chrome_driver.page_source
         selenium_response = HtmlResponse(url=response.url, body=html, encoding='utf-8')
 
         new_main_content = selenium_response.xpath('//*[@id="main-content"]//text()').extract()
@@ -63,6 +63,9 @@ class BaiduSpider(scrapy.Spider):
         # Find the sections introduce Treatment
         treatment = self.find_content('Treatment', new_main_content, new_h2_content)
         item['Treatment'] = treatment
+        print(item['Diseases'])
+
+        yield item
 
     def find_content(self, item, main_content, h2_content):
         try:
