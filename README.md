@@ -21,6 +21,9 @@ The source of these data are from https://www.mayoclinic.org/diseases-conditions
    from the website.
    To Install Selenium:
    - pip install selenium
+   Besides, Selenium requires a browser driver. In this project, I am using Chrome Webdriver. Here is the download link: https://chromedriver.chromium.org/
+   If you are using Linux or Mac, please download the correct version and copy to spider directory. Then modify the line10 in mayoclinic into the correct 
+   driver name.
 4. neo4j. The graph database neo4j is applied in this project since I want to reveal the relatinship of the diseases data I fetched. To enable the connection of
    neo4j database and scrapy framework, the py2neo library is used here. All the settings like host, username and password are all stored in the settings.py file.
    Feel free to modify them based on your own local env.
