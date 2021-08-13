@@ -5,6 +5,7 @@ Author: Xiaohan Gu
 ## Intro 
 This project is used to crawl diseases data, their associated symptoms, treatment, causes and diagnosis which form a knowledge graph using the graph database neo4j.
 The final graph should reveal the realationship between different diseases, symptoms, treatment, causes, diagnosis and you will be able to see their connections.
+The source of these data are from https://www.mayoclinic.org/diseases-conditions/index?letter=A
 
 ## Tech Stacks
 1. Python. The whole project is written in Python.
@@ -33,6 +34,9 @@ directory. You will see that the spider is working from the console.
 
 ## Result
 Here is the current graph result:
-
+![Screenshot](https://github.com/Willisgxh/OscerSpider/blob/master/Oscer.PNG)
+Due to the symptoms, treatment, causes and diagnosis are written in a long paragraph, I still need to track the keywords in them and categorize them into more
+specific nodes. After doing this, the relationship between them and diseases will be more clear. For example, one disease can have multiple symptoms and one
+symptom is related to several diseases.
 
 
