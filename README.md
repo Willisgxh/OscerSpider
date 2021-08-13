@@ -1,5 +1,4 @@
 # OscerSpider
-
 Software Engineer - Web Scraping
 Author: Xiaohan Gu
 
@@ -7,7 +6,7 @@ Author: Xiaohan Gu
 This project is used to crawl diseases data, their associated symptoms, treatment, causes and diagnosis which form a knowledge graph using the graph database neo4j.
 The final graph should reveal the realationship between different diseases, symptoms, treatment, causes, diagnosis and you will be able to see their connections.
 
-## Tech Stack
+## Tech Stacks
 1. Python. The whole project is written in Python.
 2. Scrapy framework. Scrapy is the most popular web scraping framewok in the industry. This project applies Scrapy to make schedule, dispatch spiders to their works,
    store in scrapy Items and use the scrapy pipeline to store the final data into local database.
@@ -28,7 +27,12 @@ The final graph should reveal the realationship between different diseases, symp
    - Download and install neo4j graph database. Source: https://neo4j.com/try-neo4j/
    - pip install py2neo
 
+## Start the Spider
+To start this program, you need firstly install the libraries and database mentioned in the tech stacks part. Then, eaily run the main.py file under the spider
+directory. You will see that the spider is working from the console.
 
+## Result
+Here is the current graph result:
 
 
 
