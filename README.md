@@ -21,3 +21,14 @@ The final graph should reveal the realationship between different diseases, symp
    from the website.
    To Install Selenium:
    - pip install selenium
+4. neo4j. The graph database neo4j is applied in this project since I want to reveal the relatinship of the diseases data I fetched. To enable the connection of
+   neo4j database and scrapy framework, the py2neo library is used here. All the settings like host, username and password are all stored in the settings.py file.
+   Feel free to modify them based on your own local env.
+   To install neo4j:
+   - Download and install neo4j graph database. Source: https://neo4j.com/try-neo4j/
+   - pip install py2neo
+
+
+
+
+
