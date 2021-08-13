@@ -34,24 +34,38 @@ class OscerspiderPipeline:
     def process_item(self, item, spider):
         item_dict = dict(item)
         print(item_dict)
-        # with self.client.session() as session:
-            # Create Nodes in neo4j
+
         matcher = NodeMatcher(self.client)
         if not matcher.match("Diseases", Diseases=item_dict.get('Diseases')):
             d = Node("Diseases", Diseases=item_dict.get('Diseases'))
+            self.client.create(d)
+        else:
+            d = matcher.match("Diseases", Diseases=item_dict.get('Diseases'))[0]
         if not matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms')):
             s = Node("Symptoms", Symptoms=item_dict.get('Symptoms'))
+            self.client.create(s)
+        else:
+            s = matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms'))[0]
         if not matcher.match("Causes", Causes=item_dict.get('Causes')):
             c = Node("Causes", Causes=item_dict.get('Causes'))
+            self.client.create(c)
+        else:
+            c = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
         if not matcher.match("Diagnosis", Diagnosis=item_dict.get('Diagnosis')):
             dia = Node("Diagnosis", Diagnosis=item_dict.get('Diagnosis'))
+            self.client.create(dia)
+        else:
+            dia = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
         if not matcher.match("Treatment", Treatment=item_dict.get('Treatment')):
             t = Node("Treatment", Treatment=item_dict.get('Treatment'))
+            self.client.create(t)
+        else:
+            t = matcher.match("Treatment", Treatment=item_dict.get('Treatment'))[0]
         try:
             r1 = Relationship(d, "HAS", s)
             r2 = Relationship(d, "DUE_TO", c)
             r3 = Relationship(t, "TREAT", d)
-            s = d | s | c | dia | t | r1 | r2 | r3
+            s = r1 | r2 | r3
             self.client.create(s)
         except UnboundLocalError:
             pass
