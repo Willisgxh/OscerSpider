@@ -38,8 +38,9 @@ directory. You will see that the spider is working from the console.
 ## Result
 Here is the current graph result:
 ![Screenshot](https://github.com/Willisgxh/OscerSpider/blob/master/Oscer.PNG)
-Due to the symptoms, treatment, causes and diagnosis are written in a long paragraph, I still need to track the keywords in them and categorize them into more
-specific nodes. After doing this, the relationship between them and diseases will be more clear. For example, one disease can have multiple symptoms and one
-symptom is related to several diseases.
+
+This graph clearly demonstrates the relationship between different diseases. Some of them share the same symptoms. Therefore, based on this result, AI is able to 
+learn that each symptom may represent which diseases. Moreover, I can apply the same strategy for other attributes like causes, treatment and so on. After categorizing
+them, it is easy to find out their relationship with diseases. To optimize the performance, NLP will be really useful in this project.
 
 
