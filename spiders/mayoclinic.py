@@ -1,32 +1,62 @@
 import scrapy
-from ..items import OscerspiderItem
+from ..items import OscerSpiderItem, OscerSymptomsItem
 from selenium import webdriver
 from scrapy.http import HtmlResponse
 
 
-class BaiduSpider(scrapy.Spider):
+class mayoClinicSpider(scrapy.Spider):
     name = 'mayoclinic'
     allowed_domains = ['www.mayoclinic.org']
     chrome_driver = webdriver.Chrome('chromedriver.exe')
 
-    start_urls = ['https://www.mayoclinic.org/diseases-conditions/index?letter=0']
-    for i in range(26):
-        url = 'https://www.mayoclinic.org/diseases-conditions/index?letter=' + chr(65 + i)
-        start_urls.append(url)
+    # start_urls = ['https://www.mayoclinic.org/diseases-conditions/index?letter=0']
+    start_urls = ['https://www.mayoclinic.org/symptoms/index?letter=A']
+    # for i in range(26):
+    #     url = 'https://www.mayoclinic.org/diseases-conditions/index?letter=' + chr(65 + i)
+    #     start_urls.append(url)
 
     def parse(self, response):
-        index = 1
-        while True:
-            xpath = '//*[@id="index"]/ol/li[' + str(index) + ']/a/@href'
-            selectors = response.xpath(xpath)
-            if not selectors:
-                break
-            url = 'https://www.mayoclinic.org/' + selectors.get()
-            yield scrapy.Request(url, callback=self.parse_diseases_detail)
-            index += 1
+        if response.url[27] == 's':
+            # Fetch Symptoms
+            index = 1
+            symptoms_item = OscerSymptomsItem()
+            while True:
+                symptoms_xpath = '//*[@id="index"]/ol/li[' + str(index) + ']/a/text()'
+                current_symptom = response.xpath(symptoms_xpath).get()
+                if not current_symptom:
+                    break
+                print(current_symptom)
+                symptoms_item['Symptoms'] = current_symptom
+                index += 1
+                yield symptoms_item
+            if ord(response.url[-1]) < 90:
+                url = response.url[:-1] + chr(ord(response.url[-1]) + 1)
+                yield scrapy.Request(url, callback=self.parse)
+            else:
+                url = 'https://www.mayoclinic.org/diseases-conditions/index?letter=0'
+                yield scrapy.Request(url, callback=self.parse)
+        elif response.url[27] == 'd':
+            # Fetch diseases
+            index = 1
+            while True:
+                xpath = '//*[@id="index"]/ol/li[' + str(index) + ']/a/@href'
+                selectors = response.xpath(xpath)
+                if not selectors:
+                    break
+                url = 'https://www.mayoclinic.org/' + selectors.get()
+                yield scrapy.Request(url, callback=self.parse_diseases_detail)
+                index += 1
+            if response.url[-1] == '0':
+                url = 'https://www.mayoclinic.org/diseases-conditions/index?letter=A'
+                yield scrapy.Request(url, callback=self.parse)
+            elif ord(response.url[-1]) < 90:
+                url = response.url[:-1] + chr(ord(response.url[-1]) + 1)
+                yield scrapy.Request(url, callback=self.parse)
+        else:
+            raise AttributeError('URL Error')
 
     def parse_diseases_detail(self, response):
-        item = OscerspiderItem()
+        item = OscerSpiderItem()
 
         # fetch disease name
         diseases_xpath = '//*[@id="mayoform"]/div[6]/header/div/h1/a/text()'

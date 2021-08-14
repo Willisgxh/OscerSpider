@@ -33,42 +33,61 @@ class OscerspiderPipeline:
 
     def process_item(self, item, spider):
         item_dict = dict(item)
-        print(item_dict)
 
-        matcher = NodeMatcher(self.client)
-        if not matcher.match("Diseases", Diseases=item_dict.get('Diseases')):
-            d = Node("Diseases", Diseases=item_dict.get('Diseases'))
-            self.client.create(d)
+        if len(item_dict) == 1:
+            matcher = NodeMatcher(self.client)
+            if not matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms')):
+                s = Node("Symptoms", Symptoms=item_dict.get('Symptoms'))
+                self.client.create(s)
         else:
-            d = matcher.match("Diseases", Diseases=item_dict.get('Diseases'))[0]
-        if not matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms')):
-            s = Node("Symptoms", Symptoms=item_dict.get('Symptoms'))
-            self.client.create(s)
-        else:
-            s = matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms'))[0]
-        if not matcher.match("Causes", Causes=item_dict.get('Causes')):
-            c = Node("Causes", Causes=item_dict.get('Causes'))
-            self.client.create(c)
-        else:
-            c = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
-        if not matcher.match("Diagnosis", Diagnosis=item_dict.get('Diagnosis')):
-            dia = Node("Diagnosis", Diagnosis=item_dict.get('Diagnosis'))
-            self.client.create(dia)
-        else:
-            dia = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
-        if not matcher.match("Treatment", Treatment=item_dict.get('Treatment')):
-            t = Node("Treatment", Treatment=item_dict.get('Treatment'))
-            self.client.create(t)
-        else:
-            t = matcher.match("Treatment", Treatment=item_dict.get('Treatment'))[0]
-        try:
-            r1 = Relationship(d, "HAS", s)
-            r2 = Relationship(d, "DUE_TO", c)
-            r3 = Relationship(t, "TREAT", d)
-            s = r1 | r2 | r3
-            self.client.create(s)
-        except UnboundLocalError:
-            pass
+            matcher = NodeMatcher(self.client)
+            # Create Disease
+            if not matcher.match("Diseases", Diseases=item_dict.get('Diseases')):
+                d = Node("Diseases", Diseases=item_dict.get('Diseases'))
+                self.client.create(d)
+            else:
+                d = matcher.match("Diseases", Diseases=item_dict.get('Diseases'))[0]
+            # if not matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms')):
+            #     s = Node("Symptoms", Symptoms=item_dict.get('Symptoms'))
+            #     self.client.create(s)
+            # else:
+            #     s = matcher.match("Symptoms", Symptoms=item_dict.get('Symptoms'))[0]
+
+            # Find Symptoms
+            all_symptoms = matcher.match("Symptoms")
+            for symptom in all_symptoms:
+                if symptom['Symptoms'] in item_dict.get('Symptoms'):
+                    relation = Relationship(d, "HAS", symptom)
+                    self.client.create(relation)
+
+            # Create Causes
+            if not matcher.match("Causes", Causes=item_dict.get('Causes')):
+                c = Node("Causes", Causes=item_dict.get('Causes'))
+                self.client.create(c)
+            else:
+                c = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
+
+            # Create Diagnosis
+            if not matcher.match("Diagnosis", Diagnosis=item_dict.get('Diagnosis')):
+                dia = Node("Diagnosis", Diagnosis=item_dict.get('Diagnosis'))
+                self.client.create(dia)
+            else:
+                dia = matcher.match("Causes", Causes=item_dict.get('Causes'))[0]
+
+            # Create Treatment
+            if not matcher.match("Treatment", Treatment=item_dict.get('Treatment')):
+                t = Node("Treatment", Treatment=item_dict.get('Treatment'))
+                self.client.create(t)
+            else:
+                t = matcher.match("Treatment", Treatment=item_dict.get('Treatment'))[0]
+            try:
+                r1 = Relationship(d, "DUE_TO", c)
+                r2 = Relationship(t, "TREAT", d)
+                r3 = Relationship(dia, "PROVIDE_TO", d)
+                s = r1 | r2 | r3
+                self.client.create(s)
+            except UnboundLocalError:
+                pass
 
             # session.run("MERGE (d: Dieases{Diseases: $diseases}) RETURN d", diseases=item_dict.get('Diseases'))
             # session.run("MERGE (s: Symptoms{Symptoms: $symptoms})", symptoms=item_dict.get('Symptoms'))
@@ -80,8 +99,5 @@ class OscerspiderPipeline:
             # session.run("CREATE (MATCH (d:Dieases) WHERE d.diseases = $diseases) - [r: has] -> (MATCH (s:Symptoms) WHERE s.symptoms = $symptoms)", diseases=item_dict.get('Diseases'), symptoms=item_dict.get('Symptoms'))
             # session.run("CREATE (MATCH (d:Dieases) WHERE d.diseases = $diseases) - [r: due_to] -> (MATCH (c:Causes) WHERE c.causes = $causes)", diseases=item_dict.get('Diseases'), causes=item_dict.get('Causes'))
             # session.run("CREATE (MATCH (t:Treatment) WHERE t.treatment = $treatment) - [r: treat] -> (MATCH (d:Dieases) WHERE d.diseases = $diseases)", diseases=item_dict.get('Diseases'), treatment=item_dict.get('Treatment'))
-
-
-
 
         return item

@@ -6,7 +6,7 @@
 import scrapy
 
 
-class OscerspiderItem(scrapy.Item):
+class OscerSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     Diseases = scrapy.Field()
@@ -14,3 +14,15 @@ class OscerspiderItem(scrapy.Item):
     Causes = scrapy.Field()
     Diagnosis = scrapy.Field()
     Treatment = scrapy.Field()
+
+
+class OscerSymptomsItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    Symptoms = scrapy.Field()
+
+
+class OscerTreatmentItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    Symptoms = scrapy.Field()
