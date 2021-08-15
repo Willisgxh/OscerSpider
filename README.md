@@ -36,7 +36,7 @@ To start this program, you need firstly install the libraries and database menti
 directory. You will see that the spider is working from the console.
 
 ## Result
-Here is the current graph result:
+Here is the current graph result (this is not the graph for all data. 300 nodes and 220 relationships are selected here):
 ![Screenshot](https://github.com/Willisgxh/OscerSpider/blob/master/Oscer.PNG)
 
 This graph clearly demonstrates the relationship between different diseases. Some of them share the same symptoms. Therefore, based on this result, AI is able to 
